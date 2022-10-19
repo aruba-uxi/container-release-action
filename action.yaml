@@ -61,6 +61,12 @@ runs:
       if: ${{ github.ref == 'refs/heads/master' || steps.build_beta_release.outputs.result }}
       shell: bash
       run: |
-        export name="${{ steps.login-ecr.outputs.registry }}/uxi/${{ inputs.image-name }}:${{ steps.image_tag.outputs.name }}"
-        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
-        docker push $name
+        set +e
+        describe_image="$( aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ steps.image_tag.outputs.name }})"
+        if [ $? -eq 0 ]; then
+          echo "Image ${{ steps.image_tag.outputs.name }} already exists and will not be pushed again."
+        else
+          export name="${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ steps.image_tag.outputs.name }}"
+          docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
+          docker push $name
+        fi
