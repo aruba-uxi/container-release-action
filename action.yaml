@@ -1,26 +1,26 @@
 name: "Docker Release"
 description: "Build and push docker container to registry"
 inputs:
-  aws_access_key_id:
+  aws-access-key-id:
     description: ""
     required: true
-  aws_secret_access_key:
+  aws-secret-access-key:
     description: ""
     required: true
-  aws_region:
+  aws-region:
     description: ""
     required: true
   dockerfile:
     description: "The path to the dockerfile"
     default: "Dockerfile"
     required: false
-  image_name:
+  image-name:
     description: "The name for the image"
     required: true
-  image_tag:
+  image-tag:
     description: "The image tag to use"
     required: true
-  fury_token:
+  fury-token:
     description: "The token needed for gemfury"
     required: true
   target:
@@ -39,9 +39,9 @@ runs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws_access_key_id: ${{ inputs.aws_access_key_id }}
-        aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
-        aws-region: ${{ inputs.aws_region }}
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
 
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
@@ -50,17 +50,17 @@ runs:
     - name: Build
       shell: bash
       run: |
-        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury_token }} .
+        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} .
 
     - name: Push image to Amazon ECR
       shell: bash
       run: |
         set +e
-        describe_image="$(aws ecr describe-images --repository-name ${{ inputs.image_name }} --image-ids imageTag=${{ inputs.image_tag }} 2> /dev/null)"
+        describe_image="$(aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ inputs.image-tag }} 2> /dev/null)"
         if [ $? -eq 0 ]; then
-          echo "Image ${{ steps.image_tag.outputs.name }} already exists and will not be pushed again."
+          echo "Image ${{ steps.image-tag.outputs.name }} already exists and will not be pushed again."
         else
-          export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image_name }}:${{ inputs.image_tag }}"
+          export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
           docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
           docker push $name
         fi
