@@ -1,32 +1,36 @@
-name: 'Setup Environment'
-description: 'Setup the lint/test environment'
+name: "Setup Environment"
+description: "Setup the lint/test environment"
 inputs:
-    dockerfile:
-      description: 'The path to the dockerfile'
-      default: 'Dockerfile'
-      required: false
-    image-name:
-      description: 'The name for the image. ${GITHUB_REPOSITORY#*/}'
-      required: true
-    chart:
-      description: 'The chart directory name. Usually the name of the service.'
-      required: true
-    default-branch-name:
-      description: 'The default branch name. master or main'
-      required: true
-    aws-access-key-id:
-      description: ''
-      required: true
-    aws-secret-access-key:
-      description: ''
-      required: true
-    target:
-      description: ''
-      default: 'prod'
-      required: true
-    fury-token:
-      description: 'The token needed for gemfury'
-      required: true
+  aws-access-key-id:
+    description: ""
+    required: true
+  aws-secret-access-key:
+    description: ""
+    required: true
+  aws-region:
+    description: ""
+    required: true
+  dockerfile:
+    description: "The path to the dockerfile"
+    default: "Dockerfile"
+    required: false
+  image-name:
+    description: "The name for the image"
+    required: true
+  image-tag:
+    description: "The image tag to use"
+    required: true
+  fury-token:
+    description: "The token needed for gemfury"
+    required: true
+  # default-branch-name:
+  #   description: "The default branch name. master or main"
+  #   required: true
+  target:
+    description: ""
+    default: "prod"
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -34,31 +38,32 @@ runs:
       shell: bash
       run: |
         docker run --rm -i hadolint/hadolint < ${{ inputs.dockerfile }}
-    - name: Get Docker Image Tag
-      shell: bash
-      run: |
-        echo "::set-output name=name::$(yq e .version charts/${{ inputs.chart }}/Chart.yaml)"
-      id: image_tag
-        
+
+    # - name: Get Docker Image Tag
+    #   shell: bash
+    #   run: |
+    #     echo "::set-output name=name::$(yq e .version charts/${{ inputs.chart }}/Chart.yaml)"
+    #   id: image_tag
+
     - name: Configure AWS Credentials
-      if: ${{ github.ref == 'refs/heads/${{ inputs.default-branch-name }}' }}
+      # if: ${{ github.ref == 'refs/heads/${{ inputs.default-branch-name }}' }}
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
-        aws-region: us-west-2
+        aws-region: ${{ inputs.aws-region }}
 
     - name: Login to Amazon ECR
-      if: ${{ github.ref == 'refs/heads/${{ inputs.default-branch-name }}' }}
-      id: login-ecr
+      # if: ${{ github.ref == 'refs/heads/${{ inputs.default-branch-name }}' }}
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build
       shell: bash
       run: |
         docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} .
+
     - name: Push image to Amazon ECR
-      if: ${{ github.ref == 'refs/heads/master' || steps.build_beta_release.outputs.result }}
+      # if: ${{ github.ref == 'refs/heads/master' || steps.build_beta_release.outputs.result }}
       shell: bash
       run: |
         set +e
