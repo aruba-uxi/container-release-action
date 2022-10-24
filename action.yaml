@@ -40,8 +40,8 @@ runs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
-        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
-        aws-region: ${{ inputs.aws-region }}
+        aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
+        aws-region: ${{ inputs.aws_region }}
 
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
@@ -50,17 +50,17 @@ runs:
     - name: Build
       shell: bash
       run: |
-        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} .
+        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury_token }} .
 
     - name: Push image to Amazon ECR
       shell: bash
       run: |
         set +e
-        describe_image="$(aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ inputs.image-tag }} 2> /dev/null)"
+        describe_image="$(aws ecr describe-images --repository-name ${{ inputs.image_name }} --image-ids imageTag=${{ inputs.image_tag }} 2> /dev/null)"
         if [ $? -eq 0 ]; then
           echo "Image ${{ steps.image_tag.outputs.name }} already exists and will not be pushed again."
         else
-          export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
+          export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image_name }}:${{ inputs.image_tag }}"
           docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
           docker push $name
         fi
