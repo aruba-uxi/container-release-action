@@ -67,7 +67,7 @@ runs:
       shell: bash
       run: |
         set +e
-        describe_image="$( aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ steps.image_tag.outputs.name }})"
+        describe_image="$( aws ecr describe-images --repository-name ${{ inputs.image-name }} --image-ids imageTag=${{ inputs.image-tag }})"
         if [ $? -eq 0 ]; then
           echo "Image ${{ steps.image_tag.outputs.name }} already exists and will not be pushed again."
         else
