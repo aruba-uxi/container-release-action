@@ -71,7 +71,7 @@ runs:
         if [ $? -eq 0 ]; then
           echo "Image ${{ steps.image_tag.outputs.name }} already exists and will not be pushed again."
         else
-          export name="${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ steps.image_tag.outputs.name }}"
+          export name="${{ steps.login-ecr.outputs.registry }}/${{ inputs.image-name }}:${{ input.image_tag }}"
           docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
           docker push $name
         fi
