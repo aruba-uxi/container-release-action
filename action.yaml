@@ -56,6 +56,7 @@ runs:
     - name: Login to Amazon ECR
       # if: ${{ github.ref == 'refs/heads/${{ inputs.default-branch-name }}' }}
       uses: aws-actions/amazon-ecr-login@v1
+      id: login_ecr
 
     - name: Build
       shell: bash
