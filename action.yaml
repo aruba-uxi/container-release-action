@@ -1,5 +1,5 @@
-name: "Setup Environment"
-description: "Setup the lint/test environment"
+name: "Docker Release"
+description: "Build and push docker container to registry"
 inputs:
   aws-access-key-id:
     description: ""
