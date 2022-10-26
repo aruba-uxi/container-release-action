@@ -1,1 +1,1 @@
-# container-release-action
+# Container Release Action
