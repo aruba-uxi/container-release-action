@@ -60,7 +60,7 @@ runs:
     - name: Build
       shell: bash
       run: |
-        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} ${{ inputs.dockerfile-contex }}
+        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} ${{ inputs.dockerfile-context }}
 
     - name: Push image to Amazon ECR
       shell: bash
