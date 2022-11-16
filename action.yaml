@@ -38,7 +38,7 @@ runs:
     - name: Run Hadolint
       shell: bash
       run: |
-        docker run --rm -i hadolint/hadolint < ${{ inputs.dockerfile }}
+        docker run --rm -i hadolint/hadolint <  ${{ inputs.dockerfile-contex }}/${{ inputs.dockerfile }}
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
