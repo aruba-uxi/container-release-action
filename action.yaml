@@ -31,6 +31,10 @@ inputs:
     description: ""
     default: "."
     required: false
+  skip-lint:
+    description: ""
+    default: ""
+    required: false
 
 runs:
   using: "composite"
