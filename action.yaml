@@ -51,7 +51,6 @@ runs:
       shell: bash
       run: |
         export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
-        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} .
         docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
         echo "::set-output name=name::$name"
       id: build_image
