@@ -33,7 +33,7 @@ inputs:
     required: false
   skip-lint:
     description: ""
-    default: ""
+    default: "false"
     required: false
 
 runs:
@@ -41,6 +41,7 @@ runs:
   steps:
     - name: Run Hadolint
       shell: bash
+      if: ${{ inputs.skip-lint }}
       run: |
         cd ${{ inputs.dockerfile-context }}
         docker run --rm -i hadolint/hadolint < ${{ inputs.dockerfile }}
