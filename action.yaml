@@ -47,12 +47,16 @@ runs:
       uses: aws-actions/amazon-ecr-login@v1
       id: login_ecr
 
-    - name: Build
+    - name: Build Image
       shell: bash
       run: |
+        export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
         docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} .
+        docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
+        echo "::set-output name=name::$name"
+      id: build_image
 
-    - name: Push image to Amazon ECR
+    - name: Push Image to Amazon ECR
       shell: bash
       run: |
         set +e
@@ -60,7 +64,5 @@ runs:
         if [ $? -eq 0 ]; then
           echo "Image ${{ inputs.image-tag }} already exists and will not be pushed again."
         else
-          export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
-          docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
-          docker push $name
+          docker push ${{ steps.build_image.outputs.name }}
         fi
