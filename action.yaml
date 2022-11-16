@@ -41,7 +41,7 @@ runs:
   steps:
     - name: Run Hadolint
       shell: bash
-      if: ${{ inputs.skip-lint }}
+      if: ${{ inputs.skip-lint }} == "false"
       run: |
         cd ${{ inputs.dockerfile-context }}
         docker run --rm -i hadolint/hadolint < ${{ inputs.dockerfile }}
