@@ -27,10 +27,6 @@ inputs:
     description: ""
     default: "prod"
     required: false
-  dockerfile-context:
-    description: ""
-    default: "."
-    required: false
 
 runs:
   using: "composite"
@@ -38,7 +34,7 @@ runs:
     - name: Run Hadolint
       shell: bash
       run: |
-        docker run --rm -i hadolint/hadolint <  ${{ inputs.dockerfile }}
+        docker run --rm -i hadolint/hadolint < ${{ inputs.dockerfile }}
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -54,7 +50,7 @@ runs:
     - name: Build
       shell: bash
       run: |
-        docker build --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} ${{ inputs.dockerfile-contex }}
+        docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} .
 
     - name: Push image to Amazon ECR
       shell: bash
@@ -65,6 +61,6 @@ runs:
           echo "Image ${{ inputs.image-tag }} already exists and will not be pushed again."
         else
           export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
-          docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name ${{ inputs.dockerfile-context }}
+          docker build --file ${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name .
           docker push $name
         fi
