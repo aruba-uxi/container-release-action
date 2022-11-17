@@ -27,19 +27,13 @@ inputs:
     description: ""
     default: "prod"
     required: false
-  skip-lint:
-    description: ""
-    default: "false"
-    required: false
 
 runs:
   using: "composite"
   steps:
     - name: Run Hadolint
       shell: bash
-      if: ${{ inputs.skip-lint  == 'false' }}
       run: |
-        cd ${{ inputs.dockerfile-context }}
         docker run --rm -i hadolint/hadolint < ${{ inputs.dockerfile }}
 
     - name: Configure AWS Credentials
