@@ -1,32 +1,32 @@
 name: "Docker Release"
 description: "Build and push docker container to registry"
 inputs:
-  skip-aws-setup:
-    description: "Skip the AWS setup process if it has been run in the same job already"
-    required: false
-    default: "false"
   aws-access-key-id:
     description: ""
     required: true
-  aws-secret-access-key:
+  aws-region:
     description: ""
     required: true
-  aws-region:
+  aws-secret-access-key:
     description: ""
     required: true
   dockerfile:
     description: "The path to the dockerfile"
     default: "Dockerfile"
     required: false
+  fury-token:
+    description: "The token needed for gemfury"
+    required: true
   image-name:
     description: "The name for the image"
     required: true
   image-tag:
     description: "The image tag to use"
     required: true
-  fury-token:
-    description: "The token needed for gemfury"
-    required: true
+  skip-aws-setup:
+    description: "Skip the AWS setup process if it has been run in the same job already"
+    required: false
+    default: "false"
   target:
     description: ""
     default: "prod"
