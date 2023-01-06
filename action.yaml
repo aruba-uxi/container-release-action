@@ -54,6 +54,7 @@ runs:
     - name: Run Hadolint
       shell: bash
       run: |
+        cd ${{ inputs.build-context }} &&\
         docker run --rm -i hadolint/hadolint < ${{ inputs.dockerfile }}
 
     - name: Build
