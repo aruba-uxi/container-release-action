@@ -27,6 +27,10 @@ inputs:
   image-tag:
     description: "The image tag to use"
     required: true
+  publish-branch:
+    description: "The git branch to publish from"
+    required: false
+    default: ${{ github.event.repository.default_branch }}
   skip-aws-setup:
     description: "Skip the AWS setup process if it has been run in the same job already"
     required: false
@@ -62,6 +66,7 @@ runs:
         docker build --file ${{ inputs.build-context }}/${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} ${{ inputs.build-context }} 
 
     - name: Push image to Amazon ECR
+      if: ${{ github.ref == inputs.publish-branch }}
       shell: bash
       run: |
         set +e
