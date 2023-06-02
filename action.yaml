@@ -59,7 +59,7 @@ runs:
     - name: Build
       shell: bash
       run: |
-        docker build --file ${{ inputs.build-context }}/${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} ${{ inputs.build-context }} 
+        docker build --file ${{ inputs.build-context }}/${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} ${{ inputs.build-context }}
 
     - name: Push image to Amazon ECR
       shell: bash
@@ -70,6 +70,6 @@ runs:
           echo "Image ${{ inputs.image-tag }} already exists and will not be pushed again."
         else
           export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
-          docker build --file ${{ inputs.build-context }}/${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name ${{ inputs.build-context }} 
+          docker build --file ${{ inputs.build-context }}/${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name ${{ inputs.build-context }}
           docker push $name
         fi
