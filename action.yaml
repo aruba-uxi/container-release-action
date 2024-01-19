@@ -3,13 +3,16 @@ description: "Build and push docker container to registry"
 inputs:
   aws-access-key-id:
     description: ""
-    required: true
+    required: false
+    default: ${{ secrets.AWS_ACCESS_KEY_ID }}
   aws-region:
     description: ""
-    required: true
+    required: false
+    default: us-west-2
   aws-secret-access-key:
     description: ""
-    required: true
+    required: false
+    default: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   build-context:
     description: "The docker build context. Default=."
     default: "."
