@@ -65,7 +65,7 @@ runs:
     - name: Pull mamba from Amazon ECR
       shell: bash
       run: |
-        export mamba_image_name="${{ steps.login_ecr.outputs.registry }}/uxi/mamba"
+        export mamba_image_name="${{ steps.login_ecr.outputs.registry }}/uxi/mamba:0.0.2"
         docker pull $mamba_image_name
 
     - name: Build
