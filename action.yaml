@@ -57,12 +57,17 @@ runs:
       uses: aws-actions/amazon-ecr-login@v1
       id: login_ecr
       with:
-        mask-password: 'true'
+        mask-password: 'true'    
 
     - name: Run Hadolint
       shell: bash
       run: |
         docker run --rm -i hadolint/hadolint < ${{ inputs.build-context }}/${{ inputs.dockerfile }}
+
+    - name: Pull mamba base image
+      shell: bash
+      run: |
+        docker pull 976748715263.dkr.ecr.us-west-2.amazonaws.com/uxi/mamba:latest
 
     - name: Build
       shell: bash
