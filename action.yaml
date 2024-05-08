@@ -67,7 +67,8 @@ runs:
     - name: Pull mamba base image
       shell: bash
       run: |
-        docker pull ${{ steps.login_ecr.outputs.registry }}/uxi/mamba:latest
+        export mamba-image-name="${{ steps.login_ecr.outputs.registry }}/uxi/mamba:latest"
+        docker pull $mamba-image-name
 
     - name: Build
       shell: bash
