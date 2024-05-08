@@ -64,11 +64,11 @@ runs:
       run: |
         docker run --rm -i hadolint/hadolint < ${{ inputs.build-context }}/${{ inputs.dockerfile }}
 
-    - name: Pull mamba base image
+    - name: Pull mamba from Amazon ECR
       shell: bash
       run: |
-        export mamba-image-name="${{ steps.login_ecr.outputs.registry }}/uxi/mamba:latest"
-        docker pull $mamba-image-name
+        export mamba_image_name="${{ steps.login_ecr.outputs.registry }}/uxi/mamba:latest"
+        docker pull $mamba_image_name
 
     - name: Build
       shell: bash
