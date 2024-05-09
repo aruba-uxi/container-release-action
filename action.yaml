@@ -44,7 +44,6 @@ runs:
   using: "composite"
   steps:
     - name: Configure AWS Credentials
-      if: ${{ inputs.skip-aws-setup == 'false' }}
       uses: aws-actions/configure-aws-credentials@v3
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
@@ -53,7 +52,6 @@ runs:
         mask-aws-account-id: 'true'
 
     - name: Login to Amazon ECR
-      if: ${{ inputs.skip-aws-push == 'false' }}
       uses: aws-actions/amazon-ecr-login@v1
       id: login_ecr
       with:
