@@ -62,12 +62,6 @@ runs:
       run: |
         docker run --rm -i hadolint/hadolint < ${{ inputs.build-context }}/${{ inputs.dockerfile }}
 
-    - name: Pull mamba from Amazon ECR
-      shell: bash
-      run: |
-        export mamba_image_name="${{ steps.login_ecr.outputs.registry }}/uxi/mamba:0.0.2"
-        docker pull $mamba_image_name
-
     - name: Build
       shell: bash
       run: |
@@ -83,6 +77,6 @@ runs:
           echo "Image ${{ inputs.image-tag }} already exists and will not be pushed again."
         else
           export name="${{ steps.login_ecr.outputs.registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
-          docker build --file ${{ inputs.build-context }}/${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name ${{ inputs.build-context }}
+          docker build --file ${{ inputs.build-context }}/${{ inputs.dockerfile }} --target ${{ inputs.target }} --build-arg FURY_AUTH_PULL=${{ inputs.fury-token }} -t $name ${{ inputs.build-context }
           docker push $name
         fi
